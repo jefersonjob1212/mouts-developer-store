@@ -17,8 +17,12 @@ import { ClientService } from '@clients/services/clients.service';
 import { ProductService } from '@products/services/product.service';
 import { ApiOperationResponse } from '@shared/interfaces/api-operation-response.interface';
 import { SaleItemViewModel } from '@sales/view-models/sale-item.view-model';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SaleResponse } from '@sales/interfaces/sale-reponse.interface';
+
+type ClientValueForm = ClientResponse | string | null;
+type SubsidiaryValueForm = SubsidiaryResponse | string | null;
 
 @Component({
   selector: 'app-sales-form',
@@ -43,6 +47,7 @@ export class SalesFormComponent {
   private subsidiaryService = inject(SubsidiaryService);
   private saleService = inject(SalesService);
   private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
 
   saleForm!: FormGroup;
@@ -50,16 +55,28 @@ export class SalesFormComponent {
   filteredClients$!: Observable<ClientResponse[]>;
   filteredSubsidiaries$!: Observable<SubsidiaryResponse[]>;
 
-  clientSearchControl = new FormControl('');
-  subsidiarySearchControl = new FormControl('');
+  clientSearchControl = new FormControl<ClientValueForm>('');
+  subsidiarySearchControl = new FormControl<SubsidiaryValueForm>('');
   saleItems: SaleItemViewModel[] = [];
 
   filteredProducts: Observable<ProductResponse[]>[] = [];
+
+  saleId?: string;
+
+  isEdit = false;
 
   ngOnInit(): void {
     this.buildForm();
     this.configureAutocomplete();
     this.addItem();
+
+    this.saleId = this.activatedRoute.snapshot.paramMap.get('id')!;
+
+    this.isEdit = !!this.saleId;
+
+    if (this.isEdit) {
+      this.loadSale();
+    }
   }
 
   private buildForm(): void {
@@ -85,10 +102,14 @@ export class SalesFormComponent {
     });
   }
 
+  backHome() {
+    this.router.navigate(['']);
+  }
+
   addItem(): void {
     const group = this.createItem();
 
-    const productSearchControl = new FormControl<string>('', {
+    const productSearchControl = new FormControl<ProductResponse | string | null>('', {
       nonNullable: true
     });
 
@@ -99,6 +120,10 @@ export class SalesFormComponent {
       switchMap(value => {
 
         if (!value) {
+          return of([]);
+        }
+
+        if (typeof value !== 'string') {
           return of([]);
         }
 
@@ -215,47 +240,82 @@ export class SalesFormComponent {
       items: this.items.getRawValue()
     };
 
-    this.saleService.create(dto)
-      .subscribe({
-        next: () => {
-          this.snackBar.open('Sale created successfully!', 'Close', {
-            duration: 3000
-          });
-          this.router.navigate(['']);
-        }, 
-        error: (error) => {
-          console.error('Error creating sale:', error);
-          this.snackBar.open('Error creating sale. Please try again.', 'Close', {
-            duration: 3000
-          });
-        }
-      });
+    if(this.isEdit) {
+      this.saleService.update(this.saleId!, dto)
+        .subscribe({
+          next: () => {
+            this.snackBar.open('Sale updated successfully!', 'Close', {
+              duration: 3000
+            });
+            this.router.navigate(['']);
+          },
+          error: (error) => {
+            console.error('Error updating sale:', error);
+            this.snackBar.open('Error updating sale. Please try again.', 'Close', {
+              duration: 3000
+            });
+          }
+        });
+    } else {
+      this.saleService.create(dto)
+        .subscribe({
+          next: () => {
+            this.snackBar.open('Sale created successfully!', 'Close', {
+              duration: 3000
+            });
+            this.router.navigate(['']);
+          },
+          error: (error) => {
+            console.error('Error creating sale:', error);
+            this.snackBar.open('Error creating sale. Please try again.', 'Close', {
+              duration: 3000
+            });
+          }
+        });
+    }
   }
 
-  displayClient(client: ClientResponse | null): string {
-    return client?.name ? client.name : client?.legalName ? client.legalName : '';
+  displayClient(value: ClientValueForm): string {
+    if (!value) {
+      return '';
+    }
+    if (typeof value === 'string') {
+      return value;
+    }
+    return value.name ?? value.legalName ?? '';
   }
 
-  displaySubsidiary(sub: SubsidiaryResponse | null): string {
-    return sub?.legalName ? sub.legalName : sub?.tradeName ? sub.tradeName : '';
+  displaySubsidiary(value: SubsidiaryValueForm): string {
+    if (!value) {
+      return '';
+    }
+
+    if (typeof value === 'string') {
+      return value;
+    }
+    return value.tradeName ?? value.legalName ?? '';
   }
 
   onClientSelected(event: MatAutocompleteSelectedEvent): void {
     const client = event.option.value as ClientResponse;
+
     this.saleForm.patchValue({
       clientId: client.id
     });
-    this.clientSearchControl.setValue(client.name ? client.name! : client.legalName!, {
+
+    this.clientSearchControl.setValue(client, {
       emitEvent: false
     });
   }
 
   onSubsidiarySelected(event: MatAutocompleteSelectedEvent): void {
     const subsidiary = event.option.value as SubsidiaryResponse;
+
     this.saleForm.patchValue({
       subsidiaryId: subsidiary.id
     });
-    this.subsidiarySearchControl.setValue(subsidiary.tradeName, {
+
+    this.subsidiarySearchControl.setValue(subsidiary, {
       emitEvent: false
     });
   }
@@ -295,5 +355,68 @@ export class SalesFormComponent {
             );
           })
         );
+  }
+
+  private loadSale(): void {
+    this.saleService
+      .getById(this.saleId!)
+      .subscribe(response => {
+        const sale = response.data;
+        this.fillForm(sale);
+      });
+  }
+
+  private fillForm(sale: SaleResponse): void {
+    this.saleForm.patchValue({
+      number: sale.number,
+      clientId: sale.clientId,
+      subsidiaryId: sale.subsidiaryId
+    });
+
+    this.clientSearchControl.setValue({
+      id: sale.clientId,
+      name: sale.clientName
+    } as ClientResponse);
+
+    this.subsidiarySearchControl.setValue({
+      id: sale.subsidiaryId,
+      tradeName: sale.subsidiaryName
+    } as SubsidiaryResponse);
+    this.disableFieldsOnEdit();
+    this.items.clear();
+
+    this.saleItems = [];
+
+    for (const item of sale.items) {
+
+      this.addItem();
+
+      const group = this.items.at(this.items.length - 1);
+
+      group.patchValue({
+        productId: item.productId,
+        code: item.productCode,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+        discount: item.discount,
+        total: item.total
+      });
+
+      this.saleItems[this.saleItems.length - 1]
+        .productSearchControl
+        .setValue({
+          id: item.productId,
+          code: item.productCode,
+          name: item.productName,
+          description: item.productDescription,
+          price: item.unitPrice
+        } as ProductResponse);
+    }
+  }
+
+  private disableFieldsOnEdit(): void {
+    this.saleForm.get('number')?.disable();
+    this.clientSearchControl.disable();
+    this.subsidiarySearchControl.disable();
   }
 }

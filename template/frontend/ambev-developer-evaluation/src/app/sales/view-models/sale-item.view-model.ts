@@ -7,6 +7,6 @@ export interface SaleItemViewModel {
         productId: FormControl<string | null>;
         quantity: FormControl<number>;
     }>;
-    productSearchControl: FormControl<string>;
+    productSearchControl: FormControl<ProductResponse | string | null>;
     filteredProducts$: Observable<ProductResponse[]>;
 }

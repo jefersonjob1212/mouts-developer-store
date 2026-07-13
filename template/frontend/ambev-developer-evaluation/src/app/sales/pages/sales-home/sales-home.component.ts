@@ -22,7 +22,6 @@ import { SalesService } from '@sales/services/sales.service';
 })
 export class SalesHomeComponent {
   private router = inject(Router);
-  private salesService = inject(SalesService);
   
   saleFilter = signal<SaleFilter>({ pageIndex: 1, pageSize: 10 });
   

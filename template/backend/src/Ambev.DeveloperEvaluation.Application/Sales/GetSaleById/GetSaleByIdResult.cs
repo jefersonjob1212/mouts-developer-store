@@ -24,9 +24,19 @@ public class GetSaleByIdResult
     public DateTime Date { get; set; }
     
     /// <summary>
+    /// Client id of sale
+    /// </summary>
+    public string ClientId { get; set; }
+    
+    /// <summary>
     /// Client name of sale
     /// </summary>
     public string ClientName { get; set; }
+    
+    /// <summary>
+    /// Subsidiary id of sale
+    /// </summary>
+    public string SubsidiaryId { get; set; }
     
     /// <summary>
     /// Subsidiary name of sale
@@ -42,4 +52,9 @@ public class GetSaleByIdResult
     /// Items of sale
     /// </summary>
     public IList<GetSaleItemResult> Items { get; set; }
+
+    /// <summary>
+    /// Total of sale
+    /// </summary>
+    public decimal TotalValues { get; set; }
 }

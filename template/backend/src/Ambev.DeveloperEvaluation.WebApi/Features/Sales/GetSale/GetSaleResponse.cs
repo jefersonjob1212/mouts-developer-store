@@ -20,9 +20,19 @@ public class GetSaleResponse
     public DateTime Date { get; set; }
     
     /// <summary>
+    /// Client id of sale
+    /// </summary>
+    public string ClientId { get; set; }
+    
+    /// <summary>
     /// Client name of sale
     /// </summary>
     public string ClientName { get; set; }
+    
+    /// <summary>
+    /// Subsidiary id of sale
+    /// </summary>
+    public string SubsidiaryId { get; set; }
     
     /// <summary>
     /// Subsidiary name of sale

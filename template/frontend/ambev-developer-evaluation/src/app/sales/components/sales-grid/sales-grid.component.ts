@@ -11,6 +11,7 @@ import { SaleFilter } from '@sales/interfaces/sale-filter-interface';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmCancelComponent } from '../confirm-cancel/confirm-cancel.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sales-grid',
@@ -29,6 +30,7 @@ export class SalesGridComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private salesService = inject(SalesService);
   readonly dialog = inject(MatDialog);
+  private router = inject(Router);
   saleFilter = input<SaleFilter>();
   salesList = signal<SaleResponse[]>([]);  
   displayedColumns: string[] = ['number', 'date', 'clientName', 'subsidiaryName', 'totalValues', 'status', 'actions'];
@@ -54,7 +56,7 @@ export class SalesGridComponent implements OnInit {
   }
 
   onEdit(sale: SaleResponse): void {
-    
+    this.router.navigate(['sales/edit', sale.id])
   }
 
   onCancel(id: string): void {
@@ -63,7 +65,6 @@ export class SalesGridComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
       if (result !== undefined) {
         this.salesService.cancel(result.id).subscribe({
           next: () => {

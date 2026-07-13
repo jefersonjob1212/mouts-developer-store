@@ -71,7 +71,6 @@ export class SalesFilterComponent implements OnInit {
   }
 
   displaySubsidiary(subsidiary: SubsidiaryResponse): string {
-    console.log('displaySubsidiary called with:', subsidiary);
     if(subsidiary) {
       return subsidiary.tradeName ? subsidiary.tradeName : subsidiary.legalName ? subsidiary.legalName : '';
     }

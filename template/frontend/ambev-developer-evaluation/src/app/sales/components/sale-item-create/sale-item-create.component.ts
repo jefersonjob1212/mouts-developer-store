@@ -29,7 +29,7 @@ export class SaleItemCreateComponent {
   group!: FormGroup;
 
   @Input({ required: true })
-  productSearchControl!: FormControl<string>;
+  productSearchControl!: FormControl<ProductResponse | string | null>;
 
   @Input({ required: true })
   filteredProducts$!: Observable<ProductResponse[]>;
@@ -40,13 +40,15 @@ export class SaleItemCreateComponent {
   @Output()
   productSelected = new EventEmitter<ProductResponse>();
 
-  displayProduct(product: ProductResponse | null): string {
-
-    if (!product) {
-        return '';
+  displayProduct(value: ProductResponse | string | null): string {
+    if (!value) {
+      return '';
     }
 
-    return `${product.code} - ${product.name}`;
+    if (typeof value === 'string') {
+      return value;
+    }
+    return `${value.code} - ${value.name}`;
   }
 
   onProductSelected(event: MatAutocompleteSelectedEvent): void {

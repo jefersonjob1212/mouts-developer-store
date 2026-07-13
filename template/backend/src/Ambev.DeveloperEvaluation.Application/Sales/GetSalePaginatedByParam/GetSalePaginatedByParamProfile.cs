@@ -19,6 +19,6 @@ public class GetSalePaginatedByParamProfile : Profile
                         ? ((IndividualClient)src.Client).Name
                         : ((CompanyClient)src.Client).TradeName))
             .ForMember(dest => dest.SubsidiaryName,
-                opt => opt.MapFrom(src => src.Subsidiary.TradeName));;
+                opt => opt.MapFrom(src => src.Subsidiary.TradeName));
     }
 }
