@@ -22,12 +22,290 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Common.Client", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("ClientType")
+                        .IsRequired()
+                        .HasMaxLength(13)
+                        .HasColumnType("character varying(13)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clients", (string)null);
+
+                    b.HasDiscriminator<string>("ClientType").HasValue("Client");
+
+                    b.UseTphMappingStrategy();
+                });
+
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Product", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("character varying(15)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("Products", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("fbb827f3-7dac-49fa-b24d-fbef6b13e6a8"),
+                            Code = "1000",
+                            Description = "Notebook Dell Inspiron 15 i7 12th Gen RAM 32GB SSD 512GB",
+                            Name = "Notebook Dell Inspiron 15",
+                            Price = 4599.90m
+                        },
+                        new
+                        {
+                            Id = new Guid("a8a9d057-8234-4e4f-8aec-a85819a4b075"),
+                            Code = "1100",
+                            Description = "Mouse Logitech MX Master 3S",
+                            Name = "Mouse Logitech MX Master 3S",
+                            Price = 599.90m
+                        },
+                        new
+                        {
+                            Id = new Guid("11154f3b-4af8-4405-952f-ee965bb62057"),
+                            Code = "1200",
+                            Description = "Teclado Mecânico Keychron K2 RGB preto",
+                            Name = "Teclado Mecânico Keychron K2",
+                            Price = 749.90m
+                        },
+                        new
+                        {
+                            Id = new Guid("be5e9de7-3fd3-4f1e-84bc-bca42a3521aa"),
+                            Code = "2000",
+                            Description = "Monitor LG UltraWide 29\" resolução 240hz",
+                            Name = "Monitor LG UltraWide 29\"",
+                            Price = 1399.90m
+                        },
+                        new
+                        {
+                            Id = new Guid("1e4a418c-7b11-4838-9be0-1357a350cd41"),
+                            Code = "2100",
+                            Description = "Headset Gamer HyperX Cloud III, Driver 53mm, USB, Multi Plataformas, Preto - 727A8AA",
+                            Name = "Headset HyperX Cloud III",
+                            Price = 849.90m
+                        },
+                        new
+                        {
+                            Id = new Guid("37a45032-d762-46f4-b6a9-181b65f3278a"),
+                            Code = "2200",
+                            Description = "Webcam Full HD Logitech C920s com Microfone Embutido, Proteção de Privacidade, Widescreen 1080p, Compatível Logitech Capture - 960-001257",
+                            Name = "Webcam Logitech C920 HD Pro",
+                            Price = 489.90m
+                        });
+                });
+
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("Number")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("SubsidiaryId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("SubsidiaryId");
+
+                    b.ToTable("Sales", (string)null);
+                });
+
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.SaleItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<decimal>("Discount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("SaleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SaleId");
+
+                    b.ToTable("SaleItems", (string)null);
+                });
+
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Subsidiary", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Cnpj")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .HasColumnType("character varying(14)");
+
+                    b.Property<string>("LegalName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(2)
+                        .HasColumnType("character varying(2)");
+
+                    b.Property<string>("TradeName")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TradeName");
+
+                    b.ToTable("Subsidiaries", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("43b664c1-79e9-4405-9161-bba9760b3bf0"),
+                            Address = "Av. Paulista, 1000 - Bela Vista",
+                            City = "São Paulo",
+                            Cnpj = "12345678000101",
+                            LegalName = "Tech System LTDA",
+                            State = "SP",
+                            TradeName = "Tech System São Paulo"
+                        },
+                        new
+                        {
+                            Id = new Guid("debcbbc3-d904-4a35-96b7-1cbcdfe41723"),
+                            Address = "Rua XV de Novembro, 500 - Centro",
+                            City = "Curitiba",
+                            Cnpj = "12345678000102",
+                            LegalName = "Tech System LTDA",
+                            State = "PR",
+                            TradeName = "Tech System Curitiba"
+                        },
+                        new
+                        {
+                            Id = new Guid("82275be2-026c-486c-a8b0-f6337b41b72b"),
+                            Address = "Av. Beira-Mar Norte, 2000 - Centro",
+                            City = "Florianópolis",
+                            Cnpj = "12345678000103",
+                            LegalName = "Tech System LTDA",
+                            State = "SC",
+                            TradeName = "Tech System Florianópolis"
+                        });
+                });
+
             modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasDefaultValueSql("gen_random_uuid()");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -54,6 +332,9 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -62,6 +343,149 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.CompanyClient", b =>
+                {
+                    b.HasBaseType("Ambev.DeveloperEvaluation.Domain.Common.Client");
+
+                    b.Property<string>("Cnpj")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .HasColumnType("character varying(14)");
+
+                    b.Property<string>("LegalName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("TradeName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasDiscriminator().HasValue("Company");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("1424f419-4208-4e2d-abd0-07a4c2f7c218"),
+                            Address = "Avenida João Sacavem, 350, Centro",
+                            City = "Navegantes",
+                            Email = "contato@techsolutions.com",
+                            PhoneNumber = "4732101000",
+                            State = "SC",
+                            Cnpj = "70471641000100",
+                            LegalName = "Tech Solutions LTDA",
+                            TradeName = "Tech Solutions"
+                        },
+                        new
+                        {
+                            Id = new Guid("198bd4f6-945b-4fa6-b38e-c6237e5c6ad0"),
+                            Address = "Avenida XV de Novembro, 1450, Sala 301, Centro",
+                            City = "Blumenau",
+                            Email = "contato@alphatechnology.com",
+                            PhoneNumber = "4731021040",
+                            State = "SC",
+                            Cnpj = "72762733000174",
+                            LegalName = "Alpha Technology LTDA",
+                            TradeName = "Alpha Technology"
+                        });
+                });
+
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.IndividualClient", b =>
+                {
+                    b.HasBaseType("Ambev.DeveloperEvaluation.Domain.Common.Client");
+
+                    b.Property<DateTime>("BornDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Cpf")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("character varying(11)");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.HasDiscriminator().HasValue("Individual");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("f0a2a5c3-35bc-4edc-b9a4-5c27fd52a2c6"),
+                            Address = "Rua Francisco Avelino Antunes, 45, Gravatá",
+                            City = "Navegantes",
+                            Email = "joao@email.com",
+                            PhoneNumber = "47999990001",
+                            State = "SC",
+                            BornDate = new DateTime(1990, 5, 10, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Cpf = "19822639031",
+                            Gender = "Male",
+                            Name = "João da Silva"
+                        },
+                        new
+                        {
+                            Id = new Guid("4b888991-162f-4ed1-800d-474e13cb1a53"),
+                            Address = "Rua Hermann Tribess, 2500, Tribess",
+                            City = "Blumenau",
+                            Email = "antonieta.maria@email.com",
+                            PhoneNumber = "47999998888",
+                            State = "SC",
+                            BornDate = new DateTime(1990, 5, 10, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Cpf = "91538032058",
+                            Gender = "Female",
+                            Name = "Antonieta Maria"
+                        });
+                });
+
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
+                {
+                    b.HasOne("Ambev.DeveloperEvaluation.Domain.Common.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Ambev.DeveloperEvaluation.Domain.Entities.Subsidiary", "Subsidiary")
+                        .WithMany()
+                        .HasForeignKey("SubsidiaryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Subsidiary");
+                });
+
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.SaleItem", b =>
+                {
+                    b.HasOne("Ambev.DeveloperEvaluation.Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Ambev.DeveloperEvaluation.Domain.Entities.Sale", "Sale")
+                        .WithMany("Items")
+                        .HasForeignKey("SaleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Sale");
+                });
+
+            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

@@ -8,10 +8,12 @@ namespace Ambev.DeveloperEvaluation.WebApi.Middleware
     public class ValidationExceptionMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILogger<ValidationExceptionMiddleware> _logger;
 
-        public ValidationExceptionMiddleware(RequestDelegate next)
+        public ValidationExceptionMiddleware(RequestDelegate next, ILogger<ValidationExceptionMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -22,6 +24,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Middleware
             }
             catch (ValidationException ex)
             {
+                _logger.LogError(ex.Message);
                 await HandleValidationExceptionAsync(context, ex);
             }
         }

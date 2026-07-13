@@ -1,0 +1,66 @@
+.full-width-table {
+    width: 100%;
+}
+
+.created {
+    color: #ff9800;
+}
+
+.approved {
+    color: #4caf50;
+}
+
+.canceled {
+    color: #f44336;
+}
+
+table{
+    width:100%;
+    border-radius:12px;
+    overflow:hidden;
+}
+
+.mat-mdc-header-row{
+    background:#f8fafc;
+}
+
+.mat-mdc-header-cell{
+    font-size:14px;
+    font-weight:600;
+    color:#374151;
+}
+
+.mat-mdc-row{
+
+    transition:.2s;
+
+    &:hover{
+        background:#f3f4f6;
+    }
+
+}
+
+.mat-mdc-cell,
+.mat-mdc-header-cell{
+    padding:18px;
+}
+
+.actions{
+    display:flex;
+    gap:8px;
+}
+
+.actions button{
+
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    transition:.2s;
+
+}
+
+.actions button:hover{
+
+    transform:scale(1.08);
+
+}

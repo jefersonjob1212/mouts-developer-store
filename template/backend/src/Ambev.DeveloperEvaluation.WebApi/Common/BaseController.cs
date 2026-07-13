@@ -34,4 +34,14 @@ public class BaseController : ControllerBase
                 TotalCount = pagedList.TotalCount,
                 Success = true
             });
+    
+    protected IActionResult OkPaginated<T>(List<T> data, int currentPage, int totalPages, int totalCount) =>
+        Ok(new PaginatedResponse<T>
+        {
+            Data = data,
+            CurrentPage = currentPage,
+            TotalPages = totalPages,
+            TotalCount = totalCount,
+            Success = true
+        });
 }

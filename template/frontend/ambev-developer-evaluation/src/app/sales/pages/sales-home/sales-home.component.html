@@ -1,0 +1,16 @@
+<div class="page-container">
+    <div class="card">
+        <div class="header">
+            <div class="title">
+                <h1>Sales</h1>
+                <p>Manage registered sales and their statuses</p>
+            </div>
+            <button mat-raised-button color="primary" (click)="routeToCreateSale()">
+                <mat-icon>add</mat-icon>
+                New Sale
+            </button>
+        </div>
+        <app-sales-filter (filterChanged)="filter($event)"></app-sales-filter>
+        <app-sales-grid [saleFilter]="saleFilter()"></app-sales-grid>
+    </div>
+</div>

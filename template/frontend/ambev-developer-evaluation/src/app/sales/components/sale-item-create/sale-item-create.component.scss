@@ -1,0 +1,58 @@
+.sale-item {
+    display: grid;
+    grid-template-columns:
+        minmax(350px, 1fr)
+        90px
+        140px
+        140px
+        140px
+        56px;
+
+    gap: 16px;
+    align-items: start;
+    margin-bottom: 16px;
+}
+
+.product-option {
+    display: flex;
+    gap: 12px;
+}
+
+.code {
+    width: 90px;
+    font-weight: 600;
+    color: #1565c0;
+}
+
+.name {
+    flex: 1;
+}
+
+.product {
+    width: 100%;
+}
+
+.quantity,
+.price,
+.discount,
+.total {
+    width: 100%;
+}
+
+button {
+    margin-top: 8px;
+}
+
+@media (max-width: 1200px) {
+
+    .sale-item {
+
+        grid-template-columns: 1fr;
+    }
+
+    button {
+
+        justify-self: end;
+    }
+
+}
